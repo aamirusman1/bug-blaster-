@@ -19,6 +19,18 @@ export default function ticketReducer(state, action) {
         ),
       };
 
+    case "SET_EDITING_TICKET":
+      return {
+        ...state,
+        editingTicket: action.payload,
+      };
+
+    case "CLEAR_EDITING_TICKET":
+      return {
+        ...state,
+        editingTicket: null,
+      };
+
     default:
       return state;
   }

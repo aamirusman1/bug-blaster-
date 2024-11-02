@@ -1,9 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-export default function TicketForm({ dispatch }) {
+export default function TicketForm({ dispatch, editingTicket }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("1");
+
+  //If we are in editing mode we need to fill the form with existing data of that particular ticket
+  useEffect(() => {
+    if (editingTicket) {
+      setTitle(editingTicket.title);
+      setDescription(editingTicket.description);
+      setPriority(editingTicket.priority);
+    } else {
+      clearForm(); //If we cancel edit
+    }
+  }, [editingTicket]);
 
   const priorityLabels = {
     1: "Low",
@@ -20,8 +31,9 @@ export default function TicketForm({ dispatch }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     //For Creating a new form object (with filled details) when we hit submit
+    //If we are editing a ticket we don't want to create a new id
     const ticketData = {
-      id: new Date().toISOString(),
+      id: editingTicket ? editingTicket.id : new Date().toISOString(),
       title,
       description,
       priority,
@@ -30,7 +42,7 @@ export default function TicketForm({ dispatch }) {
     console.log(ticketData);
 
     dispatch({
-      type: "ADD_TICKET",
+      type: editingTicket ? "UPDATE_TICKET" : "ADD_TICKET",
       payload: ticketData,
     });
 
